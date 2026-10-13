@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Portfolio</title>
+<style>
+:root{--bg:#0b0d12;--card:#141823;--line:#232a3a;--text:#e6e9f0;--mute:#8b94a8;--a:#7c5cff;--b:#22d3ee;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(11,13,18,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+nav a{text-decoration:none;color:var(--mute);margin-left:18px;font-size:14px}
+nav a:hover{color:var(--text)}
+nav b{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero{padding:90px 0 60px}
+.hero small{color:var(--b);font-family:ui-monospace,Menlo,monospace}
+h1{font-size:clamp(34px,7vw,60px);line-height:1.1;margin:10px 0}
+h1 span{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mute);max-width:560px;font-size:18px}
+.btn{display:inline-block;padding:10px 20px;border-radius:10px;border:1px solid var(--line);background:var(--card);text-decoration:none;cursor:pointer;color:var(--text);font:inherit;font-size:15px}
+.btn.p{background:linear-gradient(90deg,var(--a),var(--b));border:0;color:#08090d;font-weight:600}
+section{padding:50px 0}
+h2{font-size:26px;margin:0 0 22px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{padding:6px 14px;border:1px solid var(--line);background:var(--card);border-radius:99px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;transition:.2s}
+.card:hover{transform:translateY(-3px);border-color:var(--a)}
+.card h3{margin:0 0 6px}.card p{color:var(--mute);margin:0 0 12px;font-size:15px}
+.tag{font-size:12px;color:var(--b);margin-right:8px;font-family:ui-monospace,Menlo,monospace}
+.links a{margin-right:14px}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--mute);text-align:center;font-size:14px}
+#fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:9}
+#panel{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:#0f1320;border-left:1px solid var(--line);z-index:10;overflow:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(100%);transition:.25s}
+#panel.open{transform:none}
+#panel h4{margin:18px 0 6px;color:var(--b);font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+label{display:block;font-size:13px;color:var(--mute);margin:8px 0 3px}
+input,textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit;font-size:14px}
+textarea{resize:vertical;min-height:70px}
+.pj{border:1px dashed var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
+.row{display:flex;gap:8px;margin-top:14px}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><b id="logo"></b><div><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects" id="navProj">Projects</a><a href="#contact">Contact</a></div></div></nav>
+
+<header class="hero"><div class="wrap">
+<h1>Hi, I'm <span id="hName"></span></h1>
+<p id="hRole"></p>
+<p style="margin-top:24px"><a class="btn p" href="#projects" id="heroProj">View projects</a> <a class="btn" href="#contact">Contact me</a></p>
+</div></header>
+
+<section id="about"><div class="wrap"><h2>About</h2><p id="bio" style="color:var(--mute);max-width:700px;white-space:pre-line"></p></div></section>
+<section id="skills"><div class="wrap"><h2>Skills</h2><div class="chips" id="skillList"></div></div></section>
+<section id="projects"><div class="wrap"><h2>Projects</h2><div class="grid" id="projList"></div></div></section>
+<section id="contact"><div class="wrap"><h2>Contact</h2><p style="color:var(--mute)">You can reach me here.</p><p class="links" id="contactLinks"></p></div></section>
+<footer>&copy; <span id="yr"></span> <span id="fName"></span></footer>
+
+<script>
+var KEY="portfolio_v3";
+var DEF={name:"Tejas V K",college:"B.E. Computer Science, Sahyadri College of Engineering & Management (2025\u20132029)",role:"",
+bio:"I'm Tejas, a second-year Computer Science student. I mostly code in Python, C++, Java and C, and I'm still learning a lot.\nI'm looking for internships and people to build projects with.",
+skills:"Python, C++, Java, C, HTML, CSS, SQL",
+projects:[],
+email:"tejasvk2007@gmail.com",github:"https://github.com/tejasvk2007-ops",linkedin:"",resume:""};
+var S;
+try{var raw=localStorage.getItem(KEY);S=raw?JSON.parse(raw):null}catch(e){S=null}
+if(!S||!S.projects)S=JSON.parse(JSON.stringify(DEF));
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+function safeUrl(u){u=(u||"").trim();return /^https?:\/\//i.test(u)?u:""}
+
+function render(){
+ var n=S.name||"Your Name";
+ document.title=n+" | Portfolio";
+ $("logo").textContent="Portfolio";
+ $("hName").textContent=n;$("fName").textContent=n;$("yr").textContent=new Date().getFullYear();
+ $("hRole").textContent=[S.college,S.role].filter(Boolean).join(". ");
+ $("bio").textContent=S.bio||"";
+ var sl=$("skillList");sl.innerHTML="";
+ (S.skills||"").split(",").map(function(s){return s.trim()}).filter(Boolean).forEach(function(s){sl.appendChild(el("span","chip",s))});
+ var has=S.projects.some(function(p){return p.t||p.d});
+ $("projects").style.display=has?"":"none";$("navProj").style.display=has?"":"none";$("heroProj").style.display=has?"":"none";
+ var pl=$("projList");pl.innerHTML="";
+ S.projects.forEach(function(p){
+  if(!p.t&&!p.d)return;
+  var c=el("div","card");c.appendChild(el("h3","",p.t));c.appendChild(el("p","",p.d));
+  var t=el("div");(p.tech||"").split(",").map(function(s){return s.trim()}).filter(Boolean).forEach(function(x){t.appendChild(el("span","tag",x))});c.appendChild(t);
+  var u=safeUrl(p.l);if(u){var a=el("a","",""+"View project →");a.href=u;a.target="_blank";a.rel="noopener";a.style.cssText="display:inline-block;margin-top:12px;font-size:14px;color:var(--b)";c.appendChild(a)}
+  pl.appendChild(c)});
+ var cl=$("contactLinks");cl.innerHTML="";
+ function add(label,href){if(!href)return;var a=el("a","btn",label);a.href=href;a.target="_blank";a.rel="noopener";a.style.marginRight="10px";cl.appendChild(a)}
+ if(S.email&&/^\S+@\S+$/.test(S.email.trim()))add("Email","mailto:"+S.email.trim());
+ add("GitHub",safeUrl(S.github));add("LinkedIn",safeUrl(S.linkedin));add("Resume",safeUrl(S.resume));
+ if(!cl.children.length)cl.appendChild(el("span","","Add your contact links using the edit button."));
+}
+
+render();
+</script>
+</body>
+</html>
